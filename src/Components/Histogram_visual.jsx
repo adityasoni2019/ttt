@@ -1,5 +1,5 @@
 import Histogram from 'react-chart-histogram';
-import WordFreq from '../Files/WordFreq';
+import WordFreq from '../Files/WordFreqs';
 
 // WordFreq 
 
