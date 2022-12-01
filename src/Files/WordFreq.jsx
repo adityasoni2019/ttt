@@ -7,10 +7,10 @@ import Histogram_visual from "../Components/Histogram_visual";
 const baseURL = "https://www.terriblytinytales.com/test.txt";
 
 const WordFreq = () => {
-  const [data, setData] = useState(null);
+  const [data1, setData1] = useState(null);
   const [url, setUrl] = useState(null);
   const [frequencyMapSorted, setFrequencyMapSorted] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [xlabel, setXlabel] = useState([]);
   const [ylabel, setYlabel] = useState([]);
 
@@ -18,20 +18,29 @@ const WordFreq = () => {
     if (url) {
       axios.get(url).then((response) => {
         console.log(response.data);
-        setData(response.data);
+        setData1(response.data);
       });
     }
   }, [url]);
 
-  let wordMap = new Map();
 
-  if (data) {
+
+  let wordMap = {};
+
+
+
+  if (data1 && !loading) {
 
     // let words = data.split(/[" " ? \n]/);
     // let words = data.split(/[" " ? \n . \d \s]/);
     // let words = data.split(/[" " "" ? \n . , \d \s \W]/);
-    let words = data.split(/[" "  ? \n . , \d \s \W]/);
-
+    setLoading(true);
+    // try {
+    const words = data1.split(/[" "  ? \n . , \d \s \W]/);
+    // } catch (error) {
+    //   const words = " "
+    // }
+    console.log(words)
     // ., " ", /n, ?
 
     for (let i = 0; i < words.length; i++) {
@@ -42,47 +51,32 @@ const WordFreq = () => {
         // wordMap.set(words[i].toLowerCase(),1);
       }
     }
+    //console.log(wordMap.entries());
+    //console.log(wordMap);
 
-    const _frequencyMapSorted = new Map([...wordMap.entries()].sort((a, b) => a[1] - b[1]));
-    // this ^ has the data in a sorted (descneding) format. And, this is a map. 
+    const obj = Object.entries(wordMap).sort((a, b) => b[1] - a[1]);
 
-    // Now, we want
-    // 1.  the data of the first 20 pairs in this map.
-    //      a. delete values after 20 
-    //      b. or store the first 20 values in a different map. -> this is more pref.
-    // 
-    // 2.  and then, divide the data in 2 arrays like this - 
-    //      a. const labels = ['2016', '2017', '2018'];
-    //      b. const data = [324, 45, 672];
+    //console.log(obj)
 
-    // creating a new map, which would have the data of first 20. or even better, removing the data of anything more than 20.
+    // console.log(obj.keys())
+    // console.log(obj.values())
 
-    setFrequencyMapSorted(_frequencyMapSorted);
+    const x = Object.values(obj)
 
-    const first_20_values = new Map();
+    var labels = []
+    var values = []
 
-    let i=0;
-    for (let [key, value] of _frequencyMapSorted) {
-      i++;
-      if(i>=20) break;
-      else first_20_values.set(key, value);
+    for (let i = 0; i < 20; i++) {
+      labels.push(x[i][0])
+      values.push(x[i][1])
     }
 
-    console.log(frequencyMapSorted);
-    console.log("Hello, there are the 20 values");
-    console.log(first_20_values);
+    console.log(labels);
+    console.log(values);
 
-    let labels = []; 
-    let data = []; 
+    setXlabel(labels);
+    setYlabel(values);
 
-    let j =0;
-    for (let [key, value] of first_20_values) {
-      j++;
-      labels[j] = key;
-      data[j] = value;
-    }
-
-    // sorting. wordMap  {name, freq}
   }
 
   const handleClick = () => {
@@ -97,8 +91,9 @@ const WordFreq = () => {
     <>
       <button onClick={handleClick}>SUBMIT</button>
 
-      <div>{url && data}</div>
-      {/* {url && <Histogram_visual props = {wordMap}/>} */}
+      <div>{url && data1}</div>
+
+      {data1 && <Histogram_visual labels={xlabel} data={ylabel} />}
 
     </>
 
