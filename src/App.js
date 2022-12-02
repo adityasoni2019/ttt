@@ -1,8 +1,7 @@
-import Histogram_visual from "./Components/Histogram_visual";
-
 import Frequency from "./Components/Frequency";
-import Submit from "./Components/Submit";
+
 import WordFreq from "./Files/WordFreq";
+
 /*
 
 Develop a frontend in Reactjs or Nextjs, which does the following:
@@ -25,10 +24,24 @@ Expected solution:
 function App() {
   return (
     <div className="App">
-      
+
       {/* <Submit/> */}
-      <WordFreq/>
+      {/* <WordFreq /> */}
       {/* <Histogram_visual/> */}
+      {/* <CChart
+        type="bar"
+        data={{
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          datasets: [
+            {
+              label: 'GitHub Commits',
+              backgroundColor: '#f87979',
+              data: [40, 20, 12, 39, 10, 40, 39, 80, 40],
+            },
+          ],
+        }}
+        labels="months"
+      /> */}
 
     </div>
   );

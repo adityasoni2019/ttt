@@ -1,8 +1,9 @@
-// this is the function for counting the frequencies of every word.
+// This is for rendering histogram, and printing histogram.
 
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Histogram_visual from "../Components/Histogram_visual";
+import Frequency from "../Components/Frequency";
 
 const baseURL = "https://www.terriblytinytales.com/test.txt";
 
@@ -13,6 +14,7 @@ const WordFreq = () => {
   const [loading, setLoading] = useState(false);
   const [xlabel, setXlabel] = useState([]);
   const [ylabel, setYlabel] = useState([]);
+  const [table, setTable] = useState([]);
 
   useEffect(() => {
     if (url) {
@@ -23,52 +25,41 @@ const WordFreq = () => {
     }
   }, [url]);
 
-
-
   let wordMap = {};
 
-
-
   if (data1 && !loading) {
-
-    // let words = data.split(/[" " ? \n]/);
-    // let words = data.split(/[" " ? \n . \d \s]/);
-    // let words = data.split(/[" " "" ? \n . , \d \s \W]/);
     setLoading(true);
-    // try {
+    
     const words = data1.split(/[" "  ? \n . , \d \s \W]/);
-    // } catch (error) {
-    //   const words = " "
-    // }
+    
     console.log(words)
-    // ., " ", /n, ?
 
     for (let i = 0; i < words.length; i++) {
       if (wordMap[words[i].toLowerCase()] >= 1) {
         wordMap[words[i].toLowerCase()] += 1;
       } else {
         wordMap[words[i].toLowerCase()] = 1;
-        // wordMap.set(words[i].toLowerCase(),1);
+        
       }
     }
-    //console.log(wordMap.entries());
-    //console.log(wordMap);
 
     const obj = Object.entries(wordMap).sort((a, b) => b[1] - a[1]);
 
-    //console.log(obj)
-
-    // console.log(obj.keys())
-    // console.log(obj.values())
-
-    const x = Object.values(obj)
+    const x = Object.values(obj);
 
     var labels = []
     var values = []
 
+    var temp = [];
+
+    
     for (let i = 0; i < 20; i++) {
-      labels.push(x[i][0])
-      values.push(x[i][1])
+      labels.push(x[i][0]);
+
+      values.push(x[i][1]);
+      let y = {};
+      y[x[i][0]] = x[i][1];
+      temp.push(y); 
     }
 
     console.log(labels);
@@ -76,7 +67,7 @@ const WordFreq = () => {
 
     setXlabel(labels);
     setYlabel(values);
-
+    setTable(temp);
   }
 
   const handleClick = () => {
@@ -90,11 +81,8 @@ const WordFreq = () => {
   return (
     <>
       <button onClick={handleClick}>SUBMIT</button>
-
       <div>{url && data1}</div>
-
-      {data1 && <Histogram_visual labels={xlabel} data={ylabel} />}
-
+      {data1  && <Histogram_visual labels={xlabel} data={ylabel} />}
     </>
 
   );
