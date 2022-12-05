@@ -1,5 +1,3 @@
-// This is for rendering histogram, and printing histogram.
-
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Histogram_visual from "../Components/Histogram_visual";
@@ -14,12 +12,12 @@ const WordFreq = () => {
   const [loading, setLoading] = useState(false);
   const [xlabel, setXlabel] = useState([]);
   const [ylabel, setYlabel] = useState([]);
-  const [table, setTable] = useState([]);
+  const [obj_hook, setObjHook] = useState([]);
 
   useEffect(() => {
     if (url) {
       axios.get(url).then((response) => {
-        console.log(response.data);
+
         setData1(response.data);
       });
     }
@@ -28,46 +26,35 @@ const WordFreq = () => {
   let wordMap = {};
 
   if (data1 && !loading) {
+
     setLoading(true);
-    
     const words = data1.split(/[" "  ? \n . , \d \s \W]/);
     
-    console.log(words)
-
+    // adding words to the map.
     for (let i = 0; i < words.length; i++) {
       if (wordMap[words[i].toLowerCase()] >= 1) {
         wordMap[words[i].toLowerCase()] += 1;
       } else {
         wordMap[words[i].toLowerCase()] = 1;
-        
       }
     }
-
-    const obj = Object.entries(wordMap).sort((a, b) => b[1] - a[1]);
-
-    const x = Object.values(obj);
-
-    var labels = []
-    var values = []
-
-    var temp = [];
-
     
-    for (let i = 0; i < 20; i++) {
+    // 'obj' this is the sorted wordMap.
+    let obj = Object.entries(wordMap).sort((a, b) => b[1] - a[1]);
+    setObjHook(obj);
+    const x = Object.values(obj);
+  
+    
+    var labels = [];
+    var values = [];
+
+    for (let i = 1; i < 21; i++) {
       labels.push(x[i][0]);
-
       values.push(x[i][1]);
-      let y = {};
-      y[x[i][0]] = x[i][1];
-      temp.push(y); 
     }
-
-    console.log(labels);
-    console.log(values);
 
     setXlabel(labels);
     setYlabel(values);
-    setTable(temp);
   }
 
   const handleClick = () => {
@@ -81,10 +68,13 @@ const WordFreq = () => {
   return (
     <>
       <button onClick={handleClick}>SUBMIT</button>
-      <div>{url && data1}</div>
-      {data1  && <Histogram_visual labels={xlabel} data={ylabel} />}
-    </>
+      {/* <div>helo ths is some custom shit</div> */}
+      {/* <div>{url && data1}</div> */}
 
+      <div>{url && <Histogram_visual labels={xlabel} data={ylabel} />}</div>
+      <div>{url && <div><Frequency mapi = {obj_hook}/></div>}</div>
+
+    </>
   );
 };
 
